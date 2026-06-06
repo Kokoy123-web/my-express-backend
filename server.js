@@ -68,22 +68,18 @@ const generateUniqueEmployeeCode = () => {
 };
 
 
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",     
-  password: "",     
-  database: "employee_db"
+// ✨ BAG-ONG KONEKSYON GAMIT ANG POOL PARA SA RAILWAY PRODUCTION ONLINE
+const db = mysql.createPool({
+  host: process.env.MYSQLHOST || "localhost",
+  user: process.env.MYSQLUSER || "root",     
+  password: process.env.MYSQLPASSWORD || "",     
+  database: process.env.MYSQLDATABASE || "employee_db",
+  port: process.env.MYSQLPORT || 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-db.connect(err => {
-  if (err) {
-    console.error("MySQL Connection Error:", err.message);
-    console.log("Please make sure MySQL is running and the database 'employee_db' exists");
-   
-  } else {
-    console.log("MySQL Connected successfully");
-  }
-});
 
 // Detect whether positions table is named `positions` or `position`
 let POSITIONS_TABLE = "positions";
